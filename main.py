@@ -38,40 +38,39 @@ def getDatapoint(line):
         author= None
     return date, time, author, message
 async def predict(file):
-    try:
-        data = []
-        # conversation = 'F:\Web Development\Whatsapp chat analysis\WhatsApp Chat with Data Science III CSE II.txt'
-        open(file.filename, 'wb').write(await file.read())
-        with open(file.filename,encoding="utf-8") as fp:
-            fp.readline()
-            messageBuffer = []
-            date, time, author = None, None, None
-            while True:
-                line = fp.readline()
-                if not line:
-                    break
-                line = line.strip()
-                if date_time(line):
-                    if len(messageBuffer) > 0:
-                        data.append([date, time, author, ' '.join(messageBuffer)])
-                    messageBuffer.clear()
-                    date, time, author, message = getDatapoint(line)
-                    messageBuffer.append(message)
-                else:
-                    messageBuffer.append(line)
-        df = pd.DataFrame(data, columns=["Date", 'Time', 'Author', 'Message'])
-        df['Date'] = pd.to_datetime(df['Date'])
-        data = df.dropna()
-        sentiments = SentimentIntensityAnalyzer()
-
-        data["Positive"] = [sentiments.polarity_scores(i)["pos"] for i in data["Message"]]
-        data["Negative"] = [sentiments.polarity_scores(i)["neg"] for i in data["Message"]]
-        data["Neutral"] = [sentiments.polarity_scores(i)["neu"] for i in data["Message"]]
-        x = sum(data["Positive"])
-        y = sum(data["Negative"])
-        z = sum(data["Neutral"])
-    except :
-        return {"error":"something went wrong"}
+    
+    data = []
+    # conversation = 'F:\Web Development\Whatsapp chat analysis\WhatsApp Chat with Data Science III CSE II.txt'
+    open(file.filename, 'wb').write(await file.read())
+    with open(file.filename,encoding="utf-8") as fp:
+        fp.readline()
+        messageBuffer = []
+        date, time, author = None, None, None
+        while True:
+            line = fp.readline()
+            if not line:
+                break
+            line = line.strip()
+            if date_time(line):
+                if len(messageBuffer) > 0:
+                    data.append([date, time, author, ' '.join(messageBuffer)])
+                messageBuffer.clear()
+                date, time, author, message = getDatapoint(line)
+                messageBuffer.append(message)
+            else:
+                messageBuffer.append(line)
+    df = pd.DataFrame(data, columns=["Date", 'Time', 'Author', 'Message'])
+    df['Date'] = pd.to_datetime(df['Date'])
+    data = df.dropna()
+    sentiments = SentimentIntensityAnalyzer()
+    data["Positive"] = [sentiments.polarity_scores(i)["pos"] for i in data["Message"]]
+    data["Negative"] = [sentiments.polarity_scores(i)["neg"] for i in data["Message"]]
+    data["Neutral"] = [sentiments.polarity_scores(i)["neu"] for i in data["Message"]]
+    x = sum(data["Positive"])
+    y = sum(data["Negative"])
+    z = sum(data["Neutral"])
+    
+        
     def sentiment_score(a, b, c):
         message=""
         if (a>b) and (a>c):
