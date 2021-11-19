@@ -8,6 +8,7 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import shutil
 app = FastAPI()
+nltk.download('vader_lexicon')
 # Extract Time
 def date_time(s):
     pattern = '^([0-9]+)(\/)([0-9]+)(\/)([0-9]+), ([0-9]+):([0-9]+)[ ]?(AM|PM|am|pm)? -'
