@@ -27,15 +27,14 @@ WhatsApp is a fantastic source of data for analysing many patterns and relations
 ## EXPORTING CHAT
 1. Launch an individual or group chat.
 2. Select More > More > Export chat.
-3. Select whether or not to export without media.
 
 You will see an option to attach media while exporting your chat. For simplicity, it is best not to attach media. Finally, enter your email and you will find your WhatsApp chat in your inbox.
 
 
 ## IMPORTANT NOTES
-1. No media files should be included in the export chat.txt file.
+1. No media files should be included in the export 'chat.txt' file.
 2. Make sure to include your file with your post request.
-3. The file format should only be.txt.
+3. The file format should only be '.txt'.
 
 <hr>
 
