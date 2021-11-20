@@ -2,7 +2,6 @@
 
 API Link - https://calm-plains-22090.herokuapp.com/
 
-`'Note: Api is currently in production mode.'`
 
 ## Information on this API
 
@@ -10,19 +9,28 @@ WhatsApp is a fantastic source of data for analysing many patterns and relations
 
 ## API ENDPOINTS
 1. **'/'** - displays a welcome message.
+
 	`REQUEST TYPE : GET`
-`	RESPONSE : {'message': 'Welcome to Whatsapp web analysis api!'}`
-2. **'predictfile'** - for predicting and outpur
+	
+	`RESPONSE : {'message': 'Welcome to Whatsapp web analysis api!'}`
+2. **'predictfile'** - for predicting and output
+
 	`REQUEST TYPE : POST`
+	
 	`FORM - DATA : .txt`
+	
 	`RESPONSE : {"message":"Neutral 🙂"}`
-3. If any error occurred 
+3. If any error occurred you'll be getting this response
+
 	`{"error":"Something went wrong"}`
 
 ## EXPORTING CHAT
 1. Launch an individual or group chat.
 2. Select More > More > Export chat.
 3. Select whether or not to export without media.
+
+You will see an option to attach media while exporting your chat. For simplicity, it is best not to attach media. Finally, enter your email and you will find your WhatsApp chat in your inbox.
+
 
 ## IMPORTANT NOTES
 1. No media files should be included in the export chat.txt file.
