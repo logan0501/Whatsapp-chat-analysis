@@ -8,7 +8,7 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import shutil
 app = FastAPI()
-nltk.download('vader_lexicon')
+# nltk.download('vader_lexicon')
 # Extract Time
 def date_time(s):
     pattern = '^([0-9]+)(\/)([0-9]+)(\/)([0-9]+), ([0-9]+):([0-9]+)[ ]?(AM|PM|am|pm)? -'
@@ -39,49 +39,50 @@ def getDatapoint(line):
         author= None
     return date, time, author, message
 async def predict(file):
-    
-    data = []
-    # conversation = 'F:\Web Development\Whatsapp chat analysis\WhatsApp Chat with Data Science III CSE II.txt'
-    open(file.filename, 'wb').write(await file.read())
-    with open(file.filename,encoding="utf-8") as fp:
-        fp.readline()
-        messageBuffer = []
-        date, time, author = None, None, None
-        while True:
-            line = fp.readline()
-            if not line:
-                break
-            line = line.strip()
-            if date_time(line):
-                if len(messageBuffer) > 0:
-                    data.append([date, time, author, ' '.join(messageBuffer)])
-                messageBuffer.clear()
-                date, time, author, message = getDatapoint(line)
-                messageBuffer.append(message)
+    try:
+        data = []
+        open(file.filename, 'wb').write(await file.read())
+        with open(file.filename,encoding="utf-8") as fp:
+            fp.readline()
+            messageBuffer = []
+            date, time, author = None, None, None
+            while True:
+                line = fp.readline()
+                if not line:
+                    break
+                line = line.strip()
+                if date_time(line):
+                    if len(messageBuffer) > 0:
+                        data.append([date, time, author, ' '.join(messageBuffer)])
+                    messageBuffer.clear()
+                    date, time, author, message = getDatapoint(line)
+                    messageBuffer.append(message)
+                else:
+                    messageBuffer.append(line)
+        df = pd.DataFrame(data, columns=["Date", 'Time', 'Author', 'Message'])
+        df['Date'] = pd.to_datetime(df['Date'])
+        data = df.dropna()
+        sentiments = SentimentIntensityAnalyzer()
+        data["Positive"] = [sentiments.polarity_scores(i)["pos"] for i in data["Message"]]
+        data["Negative"] = [sentiments.polarity_scores(i)["neg"] for i in data["Message"]]
+        data["Neutral"] = [sentiments.polarity_scores(i)["neu"] for i in data["Message"]]
+        x = sum(data["Positive"])
+        y = sum(data["Negative"])
+        z = sum(data["Neutral"])
+
+
+        def sentiment_score(a, b, c):
+            message=""
+            if (a>b) and (a>c):
+                message = "Positive 😊 "
+            elif (b>a) and (b>c):
+                message = "Negative 😠 "
             else:
-                messageBuffer.append(line)
-    df = pd.DataFrame(data, columns=["Date", 'Time', 'Author', 'Message'])
-    df['Date'] = pd.to_datetime(df['Date'])
-    data = df.dropna()
-    sentiments = SentimentIntensityAnalyzer()
-    data["Positive"] = [sentiments.polarity_scores(i)["pos"] for i in data["Message"]]
-    data["Negative"] = [sentiments.polarity_scores(i)["neg"] for i in data["Message"]]
-    data["Neutral"] = [sentiments.polarity_scores(i)["neu"] for i in data["Message"]]
-    x = sum(data["Positive"])
-    y = sum(data["Negative"])
-    z = sum(data["Neutral"])
-    
-        
-    def sentiment_score(a, b, c):
-        message=""
-        if (a>b) and (a>c):
-            message = "Positive 😊 "
-        elif (b>a) and (b>c):
-            message = "Negative 😠 "
-        else:
-            message = "Neutral 🙂 "
-        return {"message":message}
-    return sentiment_score(x, y, z)
+                message = "Neutral 🙂 "
+            return {"message":message}
+        return sentiment_score(x, y, z)
+    except:
+        return {"error":"Something went wrong"}
     
  
 
@@ -89,7 +90,6 @@ async def predict(file):
 def main():
     return {'message': 'Welcome to Whatsapp web analysis api!'}
 
-@app.post("/predict/")
+@app.post("/predictfile")
 async def create_upload_file(file: UploadFile = File(...)):
     return await predict(file)
-    
