@@ -13,7 +13,7 @@ WhatsApp is a fantastic source of data for analysing many patterns and relations
 	`REQUEST TYPE : GET`
 	
 	`RESPONSE : {'message': 'Welcome to Whatsapp web analysis api!'}`
-2. **'predictfile'** - for predicting and output
+2. **'/predictfile'** - for predicting and output
 
 	`REQUEST TYPE : POST`
 	
